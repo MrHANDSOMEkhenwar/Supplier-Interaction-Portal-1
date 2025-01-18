@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Truck, 
   Package, 
@@ -9,10 +9,186 @@ import {
   BarChart3,
   Calendar,
   Clock,
-  AlertCircle
+  AlertCircle,
+  X
 } from 'lucide-react';
 
+// Modal Component
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  children: React.ReactNode;
+}
+
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+      <div className="bg-white rounded-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <div className="p-6 border-b border-gray-100">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
+            <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+              <X className="h-6 w-6" />
+            </button>
+          </div>
+        </div>
+        <div className="p-6">
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Order Details Component
+const OrderDetails = () => (
+  <div className="space-y-6">
+    <div className="grid grid-cols-2 gap-4">
+      <div>
+        <h3 className="text-sm font-medium text-gray-500">Order Number</h3>
+        <p className="mt-1 text-lg font-medium text-gray-900">#12345</p>
+      </div>
+      <div>
+        <h3 className="text-sm font-medium text-gray-500">Status</h3>
+        <p className="mt-1 text-lg font-medium text-blue-600">In Progress</p>
+      </div>
+      <div>
+        <h3 className="text-sm font-medium text-gray-500">Order Date</h3>
+        <p className="mt-1 text-gray-900">Jan 15, 2024</p>
+      </div>
+      <div>
+        <h3 className="text-sm font-medium text-gray-500">Expected Delivery</h3>
+        <p className="mt-1 text-gray-900">Jan 22, 2024</p>
+      </div>
+    </div>
+    
+    <div className="border-t pt-6">
+      <h3 className="text-lg font-medium text-gray-900 mb-4">Order Items</h3>
+      <div className="space-y-4">
+        <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+          <div>
+            <p className="font-medium text-gray-900">Manufacturing Parts</p>
+            <p className="text-sm text-gray-500">SKU: MP-001</p>
+          </div>
+          <div className="text-right">
+            <p className="font-medium text-gray-900">Qty: 100</p>
+            <p className="text-sm text-gray-500">$45.00/unit</p>
+          </div>
+        </div>
+        <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+          <div>
+            <p className="font-medium text-gray-900">Raw Materials</p>
+            <p className="text-sm text-gray-500">SKU: RM-002</p>
+          </div>
+          <div className="text-right">
+            <p className="font-medium text-gray-900">Qty: 50</p>
+            <p className="text-sm text-gray-500">$75.00/unit</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+// Dispatch Details Component
+const DispatchDetails = () => (
+  <div className="space-y-6">
+    <div className="grid grid-cols-2 gap-4">
+      <div>
+        <h3 className="text-sm font-medium text-gray-500">Dispatch ID</h3>
+        <p className="mt-1 text-lg font-medium text-gray-900">#D-789</p>
+      </div>
+      <div>
+        <h3 className="text-sm font-medium text-gray-500">Status</h3>
+        <p className="mt-1 text-lg font-medium text-green-600">In Transit</p>
+      </div>
+    </div>
+    
+    <div className="border-t pt-6">
+      <h3 className="text-lg font-medium text-gray-900 mb-4">Tracking Details</h3>
+      <div className="space-y-4">
+        <div className="relative pb-8">
+          <div className="flex items-center">
+            <div className="flex-shrink-0 w-3 h-3 bg-blue-600 rounded-full"></div>
+            <div className="ml-4">
+              <p className="font-medium text-gray-900">Package Picked Up</p>
+              <p className="text-sm text-gray-500">Jan 18, 2024 - 9:00 AM</p>
+            </div>
+          </div>
+          <div className="absolute left-1.5 top-3 w-0.5 h-full bg-gray-200"></div>
+        </div>
+        <div className="relative pb-8">
+          <div className="flex items-center">
+            <div className="flex-shrink-0 w-3 h-3 bg-blue-600 rounded-full"></div>
+            <div className="ml-4">
+              <p className="font-medium text-gray-900">In Transit</p>
+              <p className="text-sm text-gray-500">Jan 18, 2024 - 2:30 PM</p>
+            </div>
+          </div>
+          <div className="absolute left-1.5 top-3 w-0.5 h-full bg-gray-200"></div>
+        </div>
+        <div className="relative">
+          <div className="flex items-center">
+            <div className="flex-shrink-0 w-3 h-3 bg-gray-300 rounded-full"></div>
+            <div className="ml-4">
+              <p className="font-medium text-gray-500">Expected Delivery</p>
+              <p className="text-sm text-gray-500">Jan 19, 2024 - 3:00 PM</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+// Supplier Details Component
+const SupplierDetails = () => (
+  <div className="space-y-6">
+    <div className="grid grid-cols-2 gap-4">
+      <div>
+        <h3 className="text-sm font-medium text-gray-500">Supplier Name</h3>
+        <p className="mt-1 text-lg font-medium text-gray-900">John Supplier</p>
+      </div>
+      <div>
+        <h3 className="text-sm font-medium text-gray-500">Rating</h3>
+        <p className="mt-1 text-lg font-medium text-blue-600">4.8/5</p>
+      </div>
+      <div>
+        <h3 className="text-sm font-medium text-gray-500">Active Since</h3>
+        <p className="mt-1 text-gray-900">Jan 2020</p>
+      </div>
+      <div>
+        <h3 className="text-sm font-medium text-gray-500">Total Orders</h3>
+        <p className="mt-1 text-gray-900">1,234</p>
+      </div>
+    </div>
+    
+    <div className="border-t pt-6">
+      <h3 className="text-lg font-medium text-gray-900 mb-4">Performance Metrics</h3>
+      <div className="space-y-4">
+        <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+          <span className="text-gray-600">On-Time Delivery Rate</span>
+          <span className="font-medium text-green-600">94%</span>
+        </div>
+        <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+          <span className="text-gray-600">Quality Rating</span>
+          <span className="font-medium text-blue-600">4.8/5</span>
+        </div>
+        <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+          <span className="text-gray-600">Response Time</span>
+          <span className="font-medium text-gray-900">2.5h</span>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
 function App() {
+  const [activeModal, setActiveModal] = useState<'orders' | 'dispatch' | 'supplier' | null>(null);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Navigation */}
@@ -25,7 +201,10 @@ function App() {
             </div>
             <div className="flex items-center space-x-4">
               <Bell className="h-6 w-6 text-gray-500 hover:text-gray-700 cursor-pointer" />
-              <div className="flex items-center space-x-2 cursor-pointer">
+              <div 
+                className="flex items-center space-x-2 cursor-pointer"
+                onClick={() => setActiveModal('supplier')}
+              >
                 <User className="h-6 w-6 text-gray-500" />
                 <span className="text-sm text-gray-700">John Supplier</span>
               </div>
@@ -49,7 +228,10 @@ function App() {
         {/* Dashboard Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Orders Overview */}
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          <div 
+            className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 cursor-pointer hover:shadow-md transition-shadow"
+            onClick={() => setActiveModal('orders')}
+          >
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-gray-900">Orders Overview</h2>
               <Package className="h-6 w-6 text-blue-600" />
@@ -71,7 +253,10 @@ function App() {
           </div>
 
           {/* Delivery Status */}
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          <div 
+            className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 cursor-pointer hover:shadow-md transition-shadow"
+            onClick={() => setActiveModal('dispatch')}
+          >
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-gray-900">Delivery Status</h2>
               <Truck className="h-6 w-6 text-blue-600" />
@@ -187,6 +372,31 @@ function App() {
           </div>
         </div>
       </div>
+
+      {/* Modals */}
+      <Modal
+        isOpen={activeModal === 'orders'}
+        onClose={() => setActiveModal(null)}
+        title="Order Details"
+      >
+        <OrderDetails />
+      </Modal>
+
+      <Modal
+        isOpen={activeModal === 'dispatch'}
+        onClose={() => setActiveModal(null)}
+        title="Dispatch Details"
+      >
+        <DispatchDetails />
+      </Modal>
+
+      <Modal
+        isOpen={activeModal === 'supplier'}
+        onClose={() => setActiveModal(null)}
+        title="Supplier Profile"
+      >
+        <SupplierDetails />
+      </Modal>
     </div>
   );
 }
